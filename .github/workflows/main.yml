@@ -45,15 +45,125 @@ jobs:
             sleep 1
           done
 
+      - name: 01.sh - Verify node installation version 
+        run: |
+          chmod +x submission/01.sh
+          NODE_VERSION=$(submission/01.sh)
+          if [[ "$NODE_VERSION" == *"bitcoin-28.0"* ]]; then
+            echo "✅ Success: Node installation version passed!"
+          else
+            echo "❌ Error: Node installation version check failed!"
+            exit 1
+          fi
+
+      - name: 02.sh - Verify node network name
+        run: |
+          chmod +x submission/02.sh
+          NODE_NETWORK=$(submission/02.sh)
+          if [[ "$NODE_NETWORK" == "regtest" ]]; then
+            echo "✅ Success: Node network name verification passed!"
+          else
+            echo "❌ Error: Node network name verification failed!"
+            exit 1
+          fi
+
+      - name: 03.sh - Verify node latest block height
+        run: |
+          chmod +x submission/03.sh
+          LATEST_BLOCK_HEIGHT=$(submission/03.sh)
+          if [[ "$LATEST_BLOCK_HEIGHT" >= 0 ]]; then
+            echo "✅ Success: Node latest block height passed!"
+          else
+            echo "❌ Error: Node latest block height failed!"
+            exit 1
+          fi
+
+      - name: 04.sh - Verify Wallet Creation
+        run: |
+            chmod +x submission/04.sh
+            WALLET=$(submission/04.sh)
+            if [[ "$WALLET" == *"btrustwallet"* ]]; then
+              echo "✅ Success: Wallet creation passed!"
+            else
+              echo "❌ Error: Wallet creation failed!"
+              exit 1
+            fi
+
+      - name: 05.sh - Verify Wallet Balance
+        run: |
+          chmod +x submission/05.sh
+          BALANCE=$(submission/05.sh)
+          if (( $(echo "$BALANCE > 0" | bc -l) )); then
+            echo "✅ Success: Wallet Balance Check passed!"
+          else
+            echo "❌ Error: Wallet Balance Check failed!"
+            exit 1
+          fi
+
+      - name: 06.sh - Verify Legacy Address Generation
+        run: |
+          chmod +x submission/06.sh
+          ADDR=$(submission/06.sh)
+          if [[ -n "$ADDR" && "$ADDR" =~ ^[mn][a-km-zA-HJ-NP-Z1-9]{25,34}$ ]]; then
+            echo "✅ Success: Legacy address passed!"
+          else
+            echo "❌ Error: Legacy address check failed"
+            exit 1
+          fi
+
+      - name: 07.sh - Verify P2SH Address Generation
+        run: |
+          chmod +x submission/07.sh
+          ADDR=$(submission/07.sh)
+          if [[ -n "$ADDR" && "$ADDR" =~ ^2[a-km-zA-HJ-NP-Z1-9]{25,34}$ ]]; then
+            echo "✅ Success: P2SH address passed!"
+          else
+            echo "❌ Error: P2SH address check failed"
+            exit 1
+          fi
+
+      - name: 08.sh - Verify Native SegWit Address
+        run: |
+          chmod +x submission/08.sh
+          ADDR=$(submission/08.sh)
+          if [[ -n "$ADDR" && "$ADDR" =~ ^bcrt1q ]]; then
+            echo "✅ Success: Native SegWit address passed!"
+          else
+            echo "❌ Error: Native SegWit address check failed"
+            exit 1
+          fi
+
+      - name: 09.sh - Verify Taproot Address Generation
+        run: |
+          chmod +x submission/09.sh
+          ADDR=$(submission/09.sh)
+          if [[ -n "$ADDR" && "$ADDR" =~ ^bcrt1p ]]; then
+            echo "✅ Success: Taproot address passed!"
+          else
+            echo "❌ Error: Taproot address check failed"
+            exit 1
+          fi
+
+      - name: 10.sh - Verify Address Validation
+        run: |
+          chmod +x submission/10.sh
+          RESULT=$(submission/10.sh)
+          if [[ "$RESULT" == "true" ]]; then
+            echo "✅ Success: Address validation passed!"
+          else
+            echo "❌ Error: Address validation failed"
+            exit 1
+          fi
+
       - name: Run Capstone Exercise
         run: |
-          chmod +x submission/test.sh
+          chmod +x submission/final.sh
           
           # Install bc for floating point calculations
           sudo apt-get update && sudo apt-get install -y bc
           
           echo "Running the Bitcoin treasure hunt capstone exercise..."
-          if submission/test.sh > treasure_hunt_output.log 2>&1; then
+          if submission/final.sh > treasure_hunt_output.log 2>&1; then
             echo "✅ Capstone exercise completed successfully!"
             # Print the last 10 lines to see the summary
             echo "--- Treasure Hunt Summary ---"

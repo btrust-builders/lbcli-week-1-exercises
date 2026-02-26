@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Import helper functions
-source submission/functions.sh
+source .github/functions.sh
 
 # Week One Exercise: Bitcoin Address Generation and Transaction Verification
 # This script demonstrates using the key concepts from previous exercises in a practical scenario

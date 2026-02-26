@@ -49,7 +49,7 @@ jobs:
         run: |
           chmod +x submission/01.sh
           NODE_VERSION=$(submission/01.sh)
-          if [[ "$NODE_VERSION" == *"bitcoin-28.0"* ]]; then
+          if [[ "$NODE_VERSION" == *"v28.0.0"* ]]; then
             echo "✅ Success: Node installation version passed!"
           else
             echo "❌ Error: Node installation version check failed!"
